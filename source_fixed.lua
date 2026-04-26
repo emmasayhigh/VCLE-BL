@@ -686,7 +686,7 @@ end
 -- FAST ATTACK (Animation Speed Hack)
 task.spawn(function()
     while task.wait(0.2) do
-        if Config.FastAttack then
+        if ConfigManager:Get("FastAttack") then
             pcall(function()
                 local char = workspace.Live:FindFirstChild(player.Name) or player.Character
                 if char then
