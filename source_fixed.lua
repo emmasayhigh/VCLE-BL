@@ -37,6 +37,7 @@ local ConfigManager = {
         SpeedHack = false,
         InfJump = false,
         AutoStand = false,
+        FastAttack = false,
         AutoSkills = {
             E = false,
             R = false,
@@ -670,6 +671,7 @@ TabSettings:CreateToggle(L("AUTO_STAND"), ConfigManager:Get("AutoStand"), functi
 TabSettings:CreateToggle(L("ANTI_AFK"), ConfigManager:Get("AntiAfk"), function(state) ConfigManager:Set("AntiAfk", state) end)
 TabSettings:CreateToggle(L("SPEED_HACK"), ConfigManager:Get("SpeedHack"), function(state) ConfigManager:Set("SpeedHack", state) end)
 TabSettings:CreateToggle(L("INF_JUMP"), ConfigManager:Get("InfJump"), function(state) ConfigManager:Set("InfJump", state) end)
+TabSettings:CreateToggle("Fast Attack (x3)", ConfigManager:Get("FastAttack"), function(state) ConfigManager:Set("FastAttack", state) end)
 
 TabSettings:CreateLabel(L("SKILL_LABEL"))
 local skills = {"E", "R", "Z", "X", "C", "V", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
@@ -680,6 +682,30 @@ end
 -- 5. Tải Logic Core
 
 
+
+-- FAST ATTACK (Animation Speed Hack)
+task.spawn(function()
+    while task.wait(0.2) do
+        if Config.FastAttack then
+            pcall(function()
+                local char = workspace.Live:FindFirstChild(player.Name) or player.Character
+                if char then
+                    local hum = char:FindFirstChild("Humanoid")
+                    if hum then
+                        local animator = hum:FindFirstChildOfClass("Animator")
+                        if animator then
+                            for _, track in pairs(animator:GetPlayingAnimationTracks()) do
+                                if track.Speed > 0 and track.Speed < 3 then
+                                    track:AdjustSpeed(3)
+                                end
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
 print("[VCLE BL] Script Loaded Successfully!")
 
 -- [[ LOGIC CORE ]] --
