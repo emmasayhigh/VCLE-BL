@@ -22,6 +22,7 @@ local ConfigManager = {
         AutoRaid = false,
         AutoRestart = false,
         AutoAddStats = false,
+        SelectedRaidBoss = "Kira",
         AddStatType = "Strength",
         AutoPrestige = false,
         EspItems = false,
@@ -631,9 +632,9 @@ TabFarm:CreateToggle(L("AUTO_ARROW"), ConfigManager:Get("AutoArrow"), function(s
 TabFarm:CreateToggle(L("STOP_WORTH"), ConfigManager:Get("StopWorth0"), function(state) ConfigManager:Set("StopWorth0", state) end)
 TabFarm:CreateInput(L("DESIRED_STAND"), ConfigManager:Get("DesiredStand"), function(val) ConfigManager:Set("DesiredStand", val) end)
 
-local selectedRaidBoss = "Kira"
+local selectedRaidBoss = ConfigManager:Get("SelectedRaidBoss") or "Kira"
 TabRaid:CreateLabel(L("RAID_LABEL"))
-TabRaid:CreateDropdown(L("CHOOSE_BOSS_RAID"), {"Kira", "Dio", "Avdol", "Jotaro", "PrisonEscape", "Death13", "HeavenAscDIO"}, selectedRaidBoss, function(val) selectedRaidBoss = val end)
+TabRaid:CreateDropdown(L("CHOOSE_BOSS_RAID"), {"Kira", "Dio", "Avdol", "Jotaro", "PrisonEscape", "Death13", "HeavenAscDIO"}, selectedRaidBoss, function(val) selectedRaidBoss = val; ConfigManager:Set("SelectedRaidBoss", val) end)
 TabRaid:CreateToggle(L("AUTO_RAID"), ConfigManager:Get("AutoRaid"), function(state) ConfigManager:Set("AutoRaid", state) end)
 TabRaid:CreateToggle(L("AUTO_RESTART"), ConfigManager:Get("AutoRestart"), function(state) ConfigManager:Set("AutoRestart", state) end)
 
@@ -1170,7 +1171,7 @@ task.spawn(function()
     pcall(function() debugLbl.Parent = game:GetService("CoreGui") end)
     if not debugLbl.Parent then debugLbl.Parent = player:WaitForChild("PlayerGui") end
 
-    while task.wait(0.1) do -- Extreme Speed
+    while task.wait(0.1) do pcall(function() -- Quest
         if Config.AutoQuest then
             debugLbl.Visible = true
             local data = getQuestData(); local char = workspace.Live:FindFirstChild(player.Name); local hrp = char and char:FindFirstChild("HumanoidRootPart")
@@ -1299,6 +1300,7 @@ task.spawn(function()
         else
             debugLbl.Visible = false
         end
+        end) -- pcall
     end
 end)
 
