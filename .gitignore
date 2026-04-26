@@ -1,0 +1,27 @@
+# Lua compiled files
+*.luac
+
+# Config files (user-specific)
+*_Config.json
+VCLE_BL_Config.json
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Temp files
+*.tmp
+*.bak
+*.log
+
+# Private / Development files
+ActionLogger.lua
+YMenu_V1.lua
