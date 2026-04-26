@@ -1311,17 +1311,26 @@ end)
 task.spawn(function()
     while task.wait(2) do
         if Config.AutoPrestige then
-            local sd = player.PlayerData.SlotData; local lvl = toNum(sd.Level.Value); local money = toNum(sd.Money.Value)
-            if lvl >= 50 and money >= 10000 then
-                local mage = workspace.Npcs:FindFirstChild("Arch Mage")
-                local char = workspace.Live:FindFirstChild(player.Name); local hrp = char and char:FindFirstChild("HumanoidRootPart")
-                if mage and hrp then
-                    targetCFrame = nil; currentTarget = nil
-                    hrp.CFrame = mage.HumanoidRootPart.CFrame * CFrame.new(0,0,-3.5)
-                    task.wait(0.5); VIM:SendKeyEvent(true, Enum.KeyCode.E, false, game); task.wait(0.8); VIM:SendKeyEvent(false, Enum.KeyCode.E, false, game); task.wait(0.5)
-                    for i=1,3 do VIM:SendKeyEvent(true, Enum.KeyCode.One, false, game); task.wait(0.2); VIM:SendKeyEvent(false, Enum.KeyCode.One, false, game); task.wait(0.5) end
+            pcall(function()
+                local sd = player.PlayerData.SlotData; local lvl = toNum(sd.Level.Value); local money = toNum(sd.Money.Value)
+                if lvl >= 50 and money >= 10000 then
+                    local npcs = workspace:FindFirstChild("Npcs")
+                    local mage = npcs and npcs:FindFirstChild("Arch Mage")
+                    if not mage then
+                        -- Fallback: search in ReplicatedStorage
+                        local assets = ReplicatedStorage:FindFirstChild("assets")
+                        local cache = assets and assets:FindFirstChild("npc_cache")
+                        mage = cache and cache:FindFirstChild("Arch Mage")
+                    end
+                    local char = workspace.Live:FindFirstChild(player.Name); local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                    if mage and mage:FindFirstChild("HumanoidRootPart") and hrp then
+                        targetCFrame = nil; currentTarget = nil
+                        hrp.CFrame = mage.HumanoidRootPart.CFrame * CFrame.new(0,0,-3.5)
+                        task.wait(0.5); VIM:SendKeyEvent(true, Enum.KeyCode.E, false, game); task.wait(0.8); VIM:SendKeyEvent(false, Enum.KeyCode.E, false, game); task.wait(0.5)
+                        for i=1,3 do VIM:SendKeyEvent(true, Enum.KeyCode.One, false, game); task.wait(0.2); VIM:SendKeyEvent(false, Enum.KeyCode.One, false, game); task.wait(0.5) end
+                    end
                 end
-            end
+            end)
         end
     end
 end)
