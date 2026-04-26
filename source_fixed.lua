@@ -121,13 +121,13 @@ local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
 
 local UI_COLOR = {
-    Background = Color3.fromRGB(15, 15, 20),
-    Sidebar = Color3.fromRGB(22, 22, 28),
-    Primary = Color3.fromRGB(140, 82, 255), -- iOS Blue
+    Background = Color3.fromRGB(8, 8, 8),
+    Sidebar = Color3.fromRGB(12, 12, 12),
+    Primary = Color3.fromRGB(57, 255, 20), -- Hacker Neon Green
     Text = Color3.fromRGB(255, 255, 255),
-    SubText = Color3.fromRGB(174, 174, 178),
-    Element = Color3.fromRGB(30, 30, 36),
-    Hover = Color3.fromRGB(42, 42, 50)
+    SubText = Color3.fromRGB(0, 180, 0),
+    Element = Color3.fromRGB(18, 18, 18),
+    Hover = Color3.fromRGB(30, 60, 30)
 }
 
 function UILibrary:CreateWindow(title, credits)
@@ -149,10 +149,46 @@ function UILibrary:CreateWindow(title, credits)
     MainFrame.BorderSizePixel = 0
     MainFrame.ClipsDescendants = true
     MainFrame.Parent = ScreenGui
-    
     local UICorner = Instance.new("UICorner")
     UICorner.CornerRadius = UDim.new(0, 12)
     UICorner.Parent = MainFrame
+
+    local UIStroke = Instance.new("UIStroke")
+    UIStroke.Color = UI_COLOR.Primary
+    UIStroke.Thickness = 1.5
+    UIStroke.Transparency = 0.2
+    UIStroke.Parent = MainFrame
+
+    local CloseBtn = Instance.new("TextButton")
+    CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+    CloseBtn.Position = UDim2.new(1, -35, 0, 5)
+    CloseBtn.BackgroundTransparency = 1
+    CloseBtn.Text = "X"
+    CloseBtn.TextColor3 = Color3.fromRGB(255, 50, 50)
+    CloseBtn.Font = Enum.Font.Code
+    CloseBtn.TextSize = 18
+    CloseBtn.Parent = MainFrame
+    CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
+
+    local MinBtn = Instance.new("TextButton")
+    MinBtn.Size = UDim2.new(0, 30, 0, 30)
+    MinBtn.Position = UDim2.new(1, -65, 0, 5)
+    MinBtn.BackgroundTransparency = 1
+    MinBtn.Text = "-"
+    MinBtn.TextColor3 = UI_COLOR.Text
+    MinBtn.Font = Enum.Font.Code
+    MinBtn.TextSize = 18
+    MinBtn.Parent = MainFrame
+    local minimized = false
+    MinBtn.MouseButton1Click:Connect(function()
+        minimized = not minimized
+        MainFrame.ClipsDescendants = true
+        if minimized then
+            game:GetService("TweenService"):Create(MainFrame, TweenInfo.new(0.3), {Size = UDim2.new(0, 600, 0, 40)}):Play()
+        else
+            game:GetService("TweenService"):Create(MainFrame, TweenInfo.new(0.3), {Size = UDim2.new(0, 600, 0, 400)}):Play()
+        end
+    end)
 
     -- Kéo thả UI
     local dragging, dragInput, dragStart, startPos
@@ -190,7 +226,7 @@ function UILibrary:CreateWindow(title, credits)
     TitleLabel.BackgroundTransparency = 1
     TitleLabel.Text = title
     TitleLabel.TextColor3 = UI_COLOR.Text
-    TitleLabel.Font = Enum.Font.GothamBold
+    TitleLabel.Font = Enum.Font.Code
     TitleLabel.TextSize = 18
     TitleLabel.Parent = Sidebar
 
@@ -200,7 +236,7 @@ function UILibrary:CreateWindow(title, credits)
     CreditsLabel.BackgroundTransparency = 1
     CreditsLabel.Text = credits
     CreditsLabel.TextColor3 = UI_COLOR.SubText
-    CreditsLabel.Font = Enum.Font.Gotham
+    CreditsLabel.Font = Enum.Font.Code
     CreditsLabel.TextSize = 10
     CreditsLabel.Parent = Sidebar
 
@@ -234,7 +270,7 @@ function UILibrary:CreateWindow(title, credits)
         TabBtn.BackgroundColor3 = UI_COLOR.Element
         TabBtn.Text = "  " .. (icon and (icon .. " ") or "") .. tabName
         TabBtn.TextColor3 = UI_COLOR.SubText
-        TabBtn.Font = Enum.Font.GothamSemibold
+        TabBtn.Font = Enum.Font.Code
         TabBtn.TextSize = 13
         TabBtn.TextXAlignment = Enum.TextXAlignment.Left
         TabBtn.Parent = TabContainer
@@ -296,7 +332,7 @@ function UILibrary:CreateWindow(title, credits)
             Label.BackgroundTransparency = 1
             Label.Text = text
             Label.TextColor3 = UI_COLOR.Text
-            Label.Font = Enum.Font.Gotham
+            Label.Font = Enum.Font.Code
             Label.TextSize = 14
             Label.TextXAlignment = Enum.TextXAlignment.Left
             Label.Parent = ToggleFrame
@@ -347,7 +383,7 @@ function UILibrary:CreateWindow(title, credits)
             Label.BackgroundTransparency = 1
             Label.Text = text
             Label.TextColor3 = UI_COLOR.Primary
-            Label.Font = Enum.Font.GothamBold
+            Label.Font = Enum.Font.Code
             Label.TextSize = 14
             Label.TextXAlignment = Enum.TextXAlignment.Left
             Label.Parent = LabelFrame
@@ -360,7 +396,7 @@ function UILibrary:CreateWindow(title, credits)
             Button.BackgroundColor3 = UI_COLOR.Element
             Button.Text = text
             Button.TextColor3 = UI_COLOR.Text
-            Button.Font = Enum.Font.GothamSemibold
+            Button.Font = Enum.Font.Code
             Button.TextSize = 14
             Button.Parent = TabPage
             Instance.new("UICorner", Button).CornerRadius = UDim.new(0, 8)
@@ -384,7 +420,7 @@ function UILibrary:CreateWindow(title, credits)
             Label.BackgroundTransparency = 1
             Label.Text = text
             Label.TextColor3 = UI_COLOR.Text
-            Label.Font = Enum.Font.Gotham
+            Label.Font = Enum.Font.Code
             Label.TextSize = 14
             Label.TextXAlignment = Enum.TextXAlignment.Left
             Label.Parent = DropFrame
@@ -395,7 +431,7 @@ function UILibrary:CreateWindow(title, credits)
             SelectedLabel.BackgroundColor3 = UI_COLOR.Hover
             SelectedLabel.Text = default or (options[1] or "N/A")
             SelectedLabel.TextColor3 = UI_COLOR.Text
-            SelectedLabel.Font = Enum.Font.Gotham
+            SelectedLabel.Font = Enum.Font.Code
             SelectedLabel.TextSize = 12
             SelectedLabel.Parent = DropFrame
             Instance.new("UICorner", SelectedLabel).CornerRadius = UDim.new(0, 6)
@@ -430,7 +466,7 @@ function UILibrary:CreateWindow(title, credits)
                     btn.BackgroundColor3 = UI_COLOR.Element
                     btn.Text = "    " .. opt
                     btn.TextColor3 = UI_COLOR.SubText
-                    btn.Font = Enum.Font.Gotham
+                    btn.Font = Enum.Font.Code
                     btn.TextSize = 13
                     btn.TextXAlignment = Enum.TextXAlignment.Left
                     btn.Parent = OptionContainer
@@ -471,7 +507,7 @@ function UILibrary:CreateWindow(title, credits)
             Label.BackgroundTransparency = 1
             Label.Text = text
             Label.TextColor3 = UI_COLOR.Text
-            Label.Font = Enum.Font.Gotham
+            Label.Font = Enum.Font.Code
             Label.TextSize = 14
             Label.TextXAlignment = Enum.TextXAlignment.Left
             Label.Parent = InputFrame
@@ -482,7 +518,7 @@ function UILibrary:CreateWindow(title, credits)
             TextBox.BackgroundColor3 = UI_COLOR.Hover
             TextBox.Text = default or ""
             TextBox.TextColor3 = UI_COLOR.Text
-            TextBox.Font = Enum.Font.Gotham
+            TextBox.Font = Enum.Font.Code
             TextBox.TextSize = 12
             TextBox.Parent = InputFrame
             Instance.new("UICorner", TextBox).CornerRadius = UDim.new(0, 6)
@@ -576,11 +612,11 @@ local function L(key) return LOCALES[currentLang][key] or key end
 local Window = UILibrary:CreateWindow("VCLE BL", "BIZZARE LINEAGE - PRO EDITION BY EMMA")
 
 -- 3. Tạo các Tab
-local TabFarm = Window:CreateTab(L("TAB_FARM"), "⚔️")
-local TabRaid = Window:CreateTab(L("TAB_RAID"), "🔥")
-local TabStats = Window:CreateTab(L("TAB_STATS"), "📈")
-local TabESP = Window:CreateTab(L("TAB_ESP"), "👁️")
-local TabSettings = Window:CreateTab(L("TAB_SETTING"), "⚙️")
+local TabFarm = Window:CreateTab(L("TAB_FARM"), ">_")
+local TabRaid = Window:CreateTab(L("TAB_RAID"), ">_")
+local TabStats = Window:CreateTab(L("TAB_STATS"), ">_")
+local TabESP = Window:CreateTab(L("TAB_ESP"), ">_")
+local TabSettings = Window:CreateTab(L("TAB_SETTING"), ">_")
 
 -- 4. Liên kết UI với ConfigManager
 TabFarm:CreateLabel(L("FARM_LABEL1"))
@@ -812,7 +848,7 @@ local function applyESP(obj, color, nameText)
     local bb = obj:FindFirstChild("V63_BB")
     if not bb then
         bb = Instance.new("BillboardGui"); bb.Name = "V63_BB"; bb.Size = UDim2.new(0,200,0,50); bb.AlwaysOnTop = true; bb.ExtentsOffset = Vector3.new(0,3,0); bb.Parent = obj
-        local label = Instance.new("TextLabel"); label.Name = "Info"; label.Size = UDim2.new(1,0,1,0); label.BackgroundTransparency = 1; label.TextColor3 = color; label.TextStrokeTransparency = 0; label.TextSize = 14; label.Font = Enum.Font.GothamBold; label.Parent = bb
+        local label = Instance.new("TextLabel"); label.Name = "Info"; label.Size = UDim2.new(1,0,1,0); label.BackgroundTransparency = 1; label.TextColor3 = color; label.TextStrokeTransparency = 0; label.TextSize = 14; label.Font = Enum.Font.Code; label.Parent = bb
     end
     local finalStr = ""
     if Config.EspName then finalStr = nameText .. "\n" end
@@ -1590,6 +1626,9 @@ task.spawn(function()
         end
     end
 end)
+
+
+
 
 
 
