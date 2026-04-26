@@ -1506,8 +1506,8 @@ task.spawn(function()
 end)
 
 -- AUTO MEDITATION LOGIC
-local medicineName = "Yoga Mat" -- Tên vật phẩm medicine trong game
-local meditationNpcName = "The Self" -- Tên con NPC khi vào khu vực
+local medicineName = "Yoga Mat"
+local meditationNpcName = "The Self"
 
 task.spawn(function()
     while task.wait(0.5) do
@@ -1517,11 +1517,10 @@ task.spawn(function()
                 local hrp = char and char:FindFirstChild("HumanoidRootPart")
                 if not hrp then return end
                 
-                -- 1. Tìm NPC địch (khi nó đã thù địch và hiện trong Live)
+                -- 1. Find hostile clone
                 local hostile = nil
                 for _, v in pairs(workspace.Live:GetChildren()) do
                     if v ~= char and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and not Players:GetPlayerFromCharacter(v) then
-                        -- Phân biệt clone của mình bằng cách bắt buộc phải có tên người chơi
                         if string.find(string.lower(v.Name), string.lower(player.Name)) and string.find(string.lower(v.Name), "clone") then
                             hostile = v
                             break
@@ -1536,18 +1535,17 @@ task.spawn(function()
                     return
                 end
                 
-                -- Nếu không đánh nhau thì xóa target cũ
+                -- No fight, clear target
                 currentTarget = nil
                 targetCFrame = nil
                 
-                -- 2. Tìm NPC để nói chuyện (CHỈ KHI ĐÃ VÀO TRONG KHU VỰC THIỀN, tức là NPC phải ở gần < 2000m)
+                -- 2. Find NPC to talk (only when inside meditation zone, NPC must be < 2000m)
                 local npcToTalk = nil
                 if workspace:FindFirstChild("Npcs") then
                     local closestDist = math.huge
                     for _, npc in pairs(workspace.Npcs:GetChildren()) do
                         if npc.Name == meditationNpcName and npc:IsA("Model") and npc:FindFirstChild("HumanoidRootPart") then
                             local dist = (hrp.Position - npc.HumanoidRootPart.Position).Magnitude
-                            -- Nếu ở trong phòng thiền (khoảng cách < 2000) thì lấy con gần nhất với mình
                             if dist < 2000 and dist < closestDist then
                                 closestDist = dist
                                 npcToTalk = npc
@@ -1568,10 +1566,9 @@ task.spawn(function()
                     end
                 end
                 
-                -- 3. Nếu chưa thấy NPC, tìm Medicine ở ngoài để teleport vào trong
+                -- 3. If no NPC found, find Medicine (Yoga Mat) to teleport in
                 local med = nil
                 for _, v in pairs(workspace:GetDescendants()) do
-                    -- Tìm đúng thảm trong khu vực Meditation và chưa có người khác ngồi
                     if string.find(string.lower(v.Name), string.lower(medicineName)) and v.Parent and string.find(string.lower(v.Parent.Name), "meditation") then
                         local occupied = false
                         for _, p in pairs(Players:GetPlayers()) do
@@ -1600,7 +1597,6 @@ task.spawn(function()
     end
 end)
 
---// NEW FEATURES LOGIC
 local VirtualUser = game:GetService("VirtualUser")
 player.Idled:Connect(function()
     if Config.AntiAfk then
