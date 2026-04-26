@@ -631,6 +631,7 @@ TabFarm:CreateToggle(L("AUTO_ARROW"), ConfigManager:Get("AutoArrow"), function(s
 TabFarm:CreateToggle(L("STOP_WORTH"), ConfigManager:Get("StopWorth0"), function(state) ConfigManager:Set("StopWorth0", state) end)
 TabFarm:CreateInput(L("DESIRED_STAND"), ConfigManager:Get("DesiredStand"), function(val) ConfigManager:Set("DesiredStand", val) end)
 
+local selectedRaidBoss = "Kira"
 TabRaid:CreateLabel(L("RAID_LABEL"))
 TabRaid:CreateDropdown(L("CHOOSE_BOSS_RAID"), {"Kira", "Dio", "Avdol", "Jotaro", "PrisonEscape", "Death13", "HeavenAscDIO"}, selectedRaidBoss, function(val) selectedRaidBoss = val end)
 TabRaid:CreateToggle(L("AUTO_RAID"), ConfigManager:Get("AutoRaid"), function(state) ConfigManager:Set("AutoRaid", state) end)
@@ -659,14 +660,18 @@ TabSettings:CreateLabel(L("SETTING_LABEL"))
 TabSettings:CreateDropdown(L("LANGUAGE"), {"ENG", "VN"}, ConfigManager:Get("Language"), function(val) 
     ConfigManager:Set("Language", val) 
     ConfigManager:Save()
+    if Window.ScreenGui then Window.ScreenGui:Destroy() end
+    -- To properly reload UI, we need to restart the script, we will just notify the user
+    print("Language changed. Please execute the script again to apply changes.")
 end)
+TabSettings:CreateLabel("Change Language requires script restart")
 TabSettings:CreateToggle(L("AUTO_STAND"), ConfigManager:Get("AutoStand"), function(state) ConfigManager:Set("AutoStand", state) end)
 TabSettings:CreateToggle(L("ANTI_AFK"), ConfigManager:Get("AntiAfk"), function(state) ConfigManager:Set("AntiAfk", state) end)
 TabSettings:CreateToggle(L("SPEED_HACK"), ConfigManager:Get("SpeedHack"), function(state) ConfigManager:Set("SpeedHack", state) end)
 TabSettings:CreateToggle(L("INF_JUMP"), ConfigManager:Get("InfJump"), function(state) ConfigManager:Set("InfJump", state) end)
 
 TabSettings:CreateLabel(L("SKILL_LABEL"))
-local skills = {"E", "R", "T", "Y", "F", "G", "H", "Z", "X", "C", "V"}
+local skills = {"E", "R", "Z", "X", "C", "V", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
 for _, key in ipairs(skills) do
     TabSettings:CreateToggle(L("USE_SKILL") .. key, ConfigManager.State.AutoSkills[key], function(state) ConfigManager:SetSkill(key, state) end)
 end
@@ -694,7 +699,6 @@ local player = Players.LocalPlayer
 local function toNum(v) return tonumber(v) or 0 end
 
 -- RAID BOSSES CONFIGURATION
-local selectedRaidBoss = "Kira"
 local RAID_BOSSES = {
     ["Kira"] = { BossName = "Kira", TalkName = "Yoshikage Kira" },
     ["Dio"] = { BossName = "DIO", TalkName = "???" },
